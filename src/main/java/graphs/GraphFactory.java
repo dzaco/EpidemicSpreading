@@ -33,7 +33,7 @@ public class GraphFactory {
         if(this.worldGraph == null)
             Manhattan();
 
-        worldGraph.people = new ArrayList<Person>();
+        worldGraph.people = new ArrayList<>();
         var maxCol = this.worldGraph.nodeGrid.maxColumns();
         var maxRow = this.worldGraph.nodeGrid.maxRows();
         for(int i = 0; i < count; i++)
@@ -49,7 +49,7 @@ public class GraphFactory {
             personNode.addAttribute("x",x);
             personNode.addAttribute("y",y);
             personNode.setAttribute("ui.class", "person");
-            var person = new Person(personNode);
+            var person = new Person(personNode, startNode);
             worldGraph.people.add(person);
         }
         return this;

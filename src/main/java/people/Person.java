@@ -3,6 +3,9 @@ package people;
 import org.graphstream.graph.Node;
 
 import java.sql.PreparedStatement;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class Person {
     public PersonStatus status;
@@ -10,17 +13,17 @@ public class Person {
     public int lastInfectionTime;
     public Rules rules;
     private boolean test;
+    private Set<Node> crossroadNodes;
 
-    public Person(Node node) {
+    public Person(Node node, Node crossroadStartNode) {
         this.node = node;
         this.rules = new Rules();
         this.node.addAttribute("person", this);
+        this.crossroadNodes = new HashSet<>();
+        this.crossroadNodes.add(crossroadStartNode);
     }
-    public Person(Node node, boolean test) {
-        this.status = PersonStatus.Susceptible;
-        this.node = node;
-        this.lastInfectionTime = 0;
-        this.rules = new Rules(test);
+    public Person(Node node, Node crossroadStartNode, boolean test) {
+        this(node, crossroadStartNode);
         this.test = test;
     }
 
