@@ -25,7 +25,7 @@ public class AppSettings {
     public final Params Params;
     public class Params {
         public int n = 100;             // ∈ {100, 200, 300, 500} (number of persons)
-        public int dstart = 0;          // ∈ {0,5,10,20}
+        public int dstart = 10;          // ∈ {0,5,10,20}
         public int dinfectious = 10;    // ∈ {10,20,30,50,100}
         public int drecovered = 20;     // ∈ {20,50,100,200,500}
 

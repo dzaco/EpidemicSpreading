@@ -28,7 +28,8 @@ public class Rules {
             return false;
 
         return person.lastInfectionTime +
-                this.settings.Params.getInfectionStartDuration() >= settings.CurrentTime;
+                this.settings.Params.getInfectionStartDuration() >= settings.CurrentTime &&
+                this.settings.random.nextDouble() <= calculateProbabilityOfInfection(person.exposedTime());
     }
     public boolean canChangeStatusToRecovery(Person person) {
         if(person.status != PersonStatus.Infected)
@@ -36,7 +37,7 @@ public class Rules {
 
         return person.lastInfectionTime +
                 this.settings.Params.getInfectionStartDuration() +
-                this.settings.Params.getInfectionDuration() >= settings.CurrentTime;
+                this.settings.Params.getInfectionDuration() <= settings.CurrentTime;
     }
     public boolean canChangeStatusToSusceptible(Person person) {
         if(person.status != PersonStatus.Recovered)
@@ -45,6 +46,6 @@ public class Rules {
         return person.lastInfectionTime +
                 this.settings.Params.getInfectionStartDuration() +
                 this.settings.Params.getInfectionDuration() +
-                this.settings.Params.getRecoveryDuration() >= settings.CurrentTime;
+                this.settings.Params.getRecoveryDuration() <= settings.CurrentTime;
     }
 }

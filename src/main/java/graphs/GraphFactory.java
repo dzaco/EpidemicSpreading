@@ -1,13 +1,11 @@
 package graphs;
 
-import org.graphstream.graph.implementations.SingleGraph;
 import people.AppSettings;
 import people.Person;
 import people.PersonStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 public class GraphFactory {

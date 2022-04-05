@@ -1,22 +1,24 @@
 import graphs.GraphFactory;
+import people.AppSettings;
+import people.Direction;
 import people.Person;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
+        var settings = AppSettings.get_instance();
         var factory = new GraphFactory();
         var graph = factory.Manhattan()
-                .WithPeople(10)
-                .Infected(5)
+                .WithPeople()
+                .Infected(20)
                 .Build();
 
-        for(int time = 0; time < 100; time++) {
+        for(settings.CurrentTime = 0; settings.CurrentTime < 100; settings.CurrentTime++) {
             Thread.sleep(500);
             graph.removeNeighborsEdges();
             for (Person person : graph.people) {
                 person.move();
-            }
-            for (Person person : graph.people) {
                 person.setNeighbors(graph.findAllNeighborsTo(person));
+                person.changeStatusIfCan();
             }
         }
     }

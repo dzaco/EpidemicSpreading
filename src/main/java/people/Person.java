@@ -2,12 +2,7 @@ package people;
 
 import org.graphstream.graph.Node;
 
-import java.sql.PreparedStatement;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.*;
 
 public class Person {
     public PersonStatus status;
@@ -15,8 +10,9 @@ public class Person {
     public int lastInfectionTime;
     public Rules rules;
     public List<Person> neighbors;
-    private boolean test;
     private Set<Node> crossroadNodes;
+    private Map<Person,Integer> contactTimetable;
+
 
     public Person(Node node, Node crossroadStartNode) {
         this.node = node;
@@ -25,14 +21,11 @@ public class Person {
         this.node.addAttribute("person", this);
         this.crossroadNodes = new HashSet<>();
         this.crossroadNodes.add(crossroadStartNode);
-    }
-    public Person(Node node, Node crossroadStartNode, boolean test) {
-        this(node, crossroadStartNode);
-        this.test = test;
+        this.contactTimetable = new HashMap<>();
     }
 
-    public void changeStatus() {
-        if(!canChangeStatus() && !test)
+    public void changeStatusIfCan() {
+        if(!canChangeStatus())
             return;
 
         var newStatus = PersonStatus.values()[(status.ordinal() + 1) % PersonStatus.values().length];
@@ -42,6 +35,9 @@ public class Person {
         this.node.removeAttribute("ui.class");
         this.status = newStatus;
         this.node.addAttribute("ui.class", "person, " + status.name());
+        if(this.status == PersonStatus.Recovered || this.status == PersonStatus.Infected)
+            this.lastInfectionTime = AppSettings.get_instance().CurrentTime;
+
     }
 
     public boolean canChangeStatus() {
@@ -110,8 +106,19 @@ public class Person {
     public void setNeighbors(List<Person> neighbors) {
         assert (neighbors != null);
         this.neighbors = neighbors;
+        var newTimetable = new HashMap<Person, Integer>();
         for (Person p : this.neighbors) {
             this.node.getGraph().addEdge("neighbor " + this.node.getId() + "->" + p.node.getId(), this.node, p.node);
+            var time = this.contactTimetable.getOrDefault(p, 0) + 1;
+            newTimetable.put(p,time);
         }
+        this.contactTimetable = newTimetable;
     }
+    public int exposedTime() {
+        return this.contactTimetable.entrySet().stream()
+                .filter(p -> p.getKey().status == PersonStatus.Infected)
+                .map(Map.Entry::getValue)
+                .max(Integer::compare).orElse(0);
+    }
+
 }
