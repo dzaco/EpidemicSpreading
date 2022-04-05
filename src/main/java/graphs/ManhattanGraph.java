@@ -59,4 +59,5 @@ public class ManhattanGraph extends EnvBaseGraph {
         this.nodeGrid.put(x, y, node);
         return node;
     }
+
 }

@@ -4,8 +4,10 @@ import helpers.Key;
 import org.apache.commons.math3.util.Pair;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
+import people.AppSettings;
 import people.Person;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -65,4 +67,18 @@ public abstract class EnvBaseGraph extends SingleGraph {
             	    fill-color: rgb(0,110,0);
                 }
             """;
+
+    public List<Person> findAllNeighborsTo(Person person) {
+        var neighbors = new LinkedList<Person>();
+        var settings = AppSettings.get_instance();
+        for (Person p : this.people)
+        {
+            if(person != p && person.distanceTo(p) <= settings.Fixed.getClosePeopleDistance())
+                neighbors.add(p);
+        }
+        return neighbors;
+    }
+    public void removeNeighborsEdges() {
+        this.getEdgeSet().removeIf(edge -> edge.getId().startsWith("neighbor"));
+    }
 }

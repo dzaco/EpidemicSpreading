@@ -5,18 +5,22 @@ import org.graphstream.graph.Node;
 import java.sql.PreparedStatement;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 public class Person {
     public PersonStatus status;
     public Node node;
     public int lastInfectionTime;
     public Rules rules;
+    public List<Person> neighbors;
     private boolean test;
     private Set<Node> crossroadNodes;
 
     public Person(Node node, Node crossroadStartNode) {
         this.node = node;
+        this.neighbors = new LinkedList<>();
         this.rules = new Rules();
         this.node.addAttribute("person", this);
         this.crossroadNodes = new HashSet<>();
@@ -87,5 +91,27 @@ public class Person {
         var direction = Direction.values()[rules.settings.random.nextInt(Direction.values().length)];
         var distance = rules.settings.random.nextInt(rules.settings.Fixed.getStreetDistance());
         this.move(direction, distance);
+    }
+
+    public double distanceTo(Person person)
+    {
+        var thisX = (int)this.node.getAttribute("x");
+        var thisY = (int)this.node.getAttribute("y");
+
+        var personX = (int)person.node.getAttribute("x");
+        var personY = (int)person.node.getAttribute("y");
+
+        double distY = Math.abs(personY - thisY);
+        double distX = Math.abs(personX - thisX);
+
+        return Math.hypot(distY, distX);
+    }
+
+    public void setNeighbors(List<Person> neighbors) {
+        assert (neighbors != null);
+        this.neighbors = neighbors;
+        for (Person p : this.neighbors) {
+            this.node.getGraph().addEdge("neighbor " + this.node.getId() + "->" + p.node.getId(), this.node, p.node);
+        }
     }
 }

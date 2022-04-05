@@ -9,7 +9,7 @@ public class AppSettings {
 
         public int L = 1000;  // the size of the environment
         public int dis = 100; // the distance between two parallel streets
-        public int dist = 50; // the maximum distance between two persons for considering they are close (corresponding vertices are neighbors)
+        public int dist = 100; // the maximum distance between two persons for considering they are close (corresponding vertices are neighbors)
 
         public int getEnvSize(){
             return L;
@@ -17,7 +17,7 @@ public class AppSettings {
         public int getStreetDistance() {
             return dis;
         }
-        public int getMinPeopleDistance() {
+        public int getClosePeopleDistance() {
             return dist;
         }
     }

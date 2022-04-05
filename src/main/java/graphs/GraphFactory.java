@@ -69,7 +69,8 @@ public class GraphFactory {
         return this;
     }
 
-    public ManhattanGraph Get() {
+    public ManhattanGraph Build() {
+        this.worldGraph.display(false);
         return this.worldGraph;
     }
 }
