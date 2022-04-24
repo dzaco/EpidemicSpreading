@@ -20,16 +20,13 @@ public class Rules {
     public boolean canChangeStatusToExposed(Person person) {
         if(person.status != PersonStatus.Susceptible)
             return false;
-        // TODO: obliczyc prawdopodobienstwa dla sasiadow
-        return true;
+        return this.settings.random.nextDouble() <= calculateProbabilityOfInfection(person.exposedTime());
     }
     public boolean canChangeStatusToInfected(Person person) {
         if(person.status != PersonStatus.Exposed)
             return false;
 
-        return person.lastInfectionTime +
-                this.settings.Params.getInfectionStartDuration() >= settings.CurrentTime &&
-                this.settings.random.nextDouble() <= calculateProbabilityOfInfection(person.exposedTime());
+        return person.lastInfectionTime + this.settings.Params.getInfectionStartDuration() >= settings.CurrentTime;
     }
     public boolean canChangeStatusToRecovery(Person person) {
         if(person.status != PersonStatus.Infected)

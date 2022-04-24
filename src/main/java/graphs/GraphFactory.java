@@ -1,11 +1,13 @@
 package graphs;
 
+import org.apache.commons.math3.util.Pair;
 import people.AppSettings;
 import people.Person;
 import people.PersonStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class GraphFactory {
@@ -31,13 +33,30 @@ public class GraphFactory {
         if(this.worldGraph == null)
             Manhattan();
 
-        worldGraph.people = new ArrayList<>();
+        var coordinates = new ArrayList<Pair<Integer, Integer>>(count);
         var maxCol = this.worldGraph.nodeGrid.maxColumns();
         var maxRow = this.worldGraph.nodeGrid.maxRows();
-        for(int i = 0; i < count; i++)
-        {
+
+        for(int i = 0; i < count; i++) {
             var xIndex = this.rand.nextInt(maxCol);
             var yIndex = this.rand.nextInt(maxRow);
+            coordinates.add(new Pair<>(xIndex, yIndex));
+        }
+
+        return WithPeople(coordinates);
+    }
+    public GraphFactory WithPeople() {
+        return WithPeople(settings.Params.getPeopleCount());
+    }
+    public GraphFactory WithPeople(List<Pair<Integer, Integer>> coordinates) {
+        if(this.worldGraph == null)
+            Manhattan();
+        worldGraph.people = new ArrayList<>();
+
+        for(int i = 0; i < coordinates.size(); i++)
+        {
+            var xIndex = coordinates.get(i).getFirst();
+            var yIndex = coordinates.get(i).getSecond();
             var startNode = this.worldGraph.getNode(xIndex,yIndex);
 
             var x = startNode.getAttribute("x");
@@ -51,11 +70,8 @@ public class GraphFactory {
             worldGraph.people.add(person);
         }
         return this;
-    }
-    public GraphFactory WithPeople() {
-        return WithPeople(settings.Params.getPeopleCount());
-    }
 
+    }
     public GraphFactory Infected(int count) {
         if(worldGraph.people == null)
             WithPeople();
