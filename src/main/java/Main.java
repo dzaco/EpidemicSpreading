@@ -1,11 +1,21 @@
 import graphs.GraphFactory;
+import gui.SettingsFrame;
 import people.AppSettings;
 import people.Direction;
 import people.Person;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException {
+
+        var frame = new SettingsFrame();
+
+        while (frame.isVisible()) { }
+        run();
+    }
+
+    public static void run() throws InterruptedException {
         var settings = AppSettings.get_instance();
+
         var factory = new GraphFactory();
         var graph = factory.Manhattan()
                 .WithPeople()
